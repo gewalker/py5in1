@@ -15,6 +15,7 @@ surfaceHeight = 600
 
 surface = pygame.display.set_mode((surfaceWidth,surfaceHeight))
 pygame.display.set_caption("Pong")
+
 clock = pygame.time.Clock()
 
 def ball(x,y,size):
@@ -65,6 +66,9 @@ def main():
                     paddlea_ymove = -8
                 if event.key == pygame.K_DOWN:
                     paddlea_ymove = 8
+            if event.type == pygame.MOUSEMOTION:
+                x, y = pygame.mouse.get_pos()
+                paddlea_yloc = y
 
             if event.type == pygame.KEYUP:
                 paddlea_ymove = 0
