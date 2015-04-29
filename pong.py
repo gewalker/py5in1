@@ -42,11 +42,13 @@ def main():
     paddleb_xsize = 16
     paddleb_xloc = (surfaceWidth - 32)
     paddleb_yloc = (surfaceHeight/2 + 12)
+    score_p1 = 0
+    score_p2 = 0
     ball_size = 16
     ball_xmove = 6
     ball_ymove = random.randint(-5,5)
     ball_xloc = (surfaceWidth/2)
-    ball_yloc = ((surfaceHeight/2)+32)
+    ball_yloc = ((surfaceHeight/2) + 40)
     game_over = False
     while not game_over:
 
@@ -85,11 +87,13 @@ def main():
         if ball_yloc <= 80:
             print("Collision with upper court.")
             bloop.play()
+            ball_yloc = 81
             ball_ymove = -(ball_ymove)
 
         if ball_yloc + ball_size >= surfaceHeight - 16:
             print("Collision with lower court.")
             bloop.play()
+            ball_yloc = surfaceHeight - (17 + ball_size)
             ball_ymove = -(ball_ymove)
 
         if ball_xloc >= (paddleb_xloc):
@@ -108,11 +112,22 @@ def main():
                 ball_xmove = -(ball_xmove)
                 ball_ymove = -(ball_ymove) + paddlea_ymove
 
-        if ball_xloc < 0 or ball_xloc > surfaceWidth:
+        if ball_xloc < 0:
             print("Ball outside playfield")
             youlose.play()
+            score_p2 += 1
             time.sleep(3)
             ball_xmove = 6
+            ball_ymove = random.randint(-5,5)
+            ball_xloc = (surfaceWidth/2)
+            ball_yloc = ((surfaceHeight/2)+32)
+
+        if ball_xloc > surfaceWidth:
+            print("Ball outside playfield")
+            youlose.play()
+            score_p1 += 1
+            time.sleep(3)
+            ball_xmove = -6
             ball_ymove = random.randint(-5,5)
             ball_xloc = (surfaceWidth/2)
             ball_yloc = ((surfaceHeight/2)+32)
