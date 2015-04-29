@@ -28,10 +28,14 @@ def court():
 #    pygame.draw.rect(surface,white,[surfaceWidth-16,64,16,surfaceHeight-64])
     pygame.draw.rect(surface,white,[0,surfaceHeight-16,surfaceWidth,16])
 
-def main():
+def sfx():
     blip = pygame.mixer.Sound("pongblip.wav")
     youlose = pygame.mixer.Sound("youlose.wav")
     bloop = pygame.mixer.Sound("pongbloop.wav")
+    return (blip, bloop, youlose)
+
+def main():
+    blip, bloop, youlose = sfx()
     paddlea_ymove = 0
     paddlea_ysize = 80
     paddlea_xsize = 16
@@ -116,6 +120,7 @@ def main():
             print("Ball outside playfield")
             youlose.play()
             score_p2 += 1
+            print("Score: " + str(score_p1) + " | " + str(score_p2))
             time.sleep(3)
             ball_xmove = 6
             ball_ymove = random.randint(-5,5)
@@ -126,15 +131,16 @@ def main():
             print("Ball outside playfield")
             youlose.play()
             score_p1 += 1
+            print("Score: " + str(score_p1) + " | " + str(score_p2))
             time.sleep(3)
             ball_xmove = -6
             ball_ymove = random.randint(-5,5)
             ball_xloc = (surfaceWidth/2)
             ball_yloc = ((surfaceHeight/2)+32)
 
-        if ball_yloc > (paddleb_yloc + paddleb_ysize):
+        if ball_yloc > (paddleb_yloc + (paddleb_ysize / 2)):
             paddleb_ymove = 6
-        elif ball_yloc < paddleb_yloc:
+        elif ball_yloc < paddleb_yloc + (paddleb_ysize / 2):
             paddleb_ymove = -6
         else:
             paddleb_ymove = 0
@@ -143,7 +149,7 @@ def main():
         paddleb_yloc = paddleb_yloc + paddleb_ymove
         ball_xloc = ball_xloc + ball_xmove
         ball_yloc = ball_yloc + ball_ymove
-        print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
+    #   print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
         surface.fill(black)
         court()
         paddle(paddlea_xloc,paddlea_yloc,paddlea_xsize,paddlea_ysize)
