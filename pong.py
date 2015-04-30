@@ -3,9 +3,11 @@
 import pygame
 import random
 import time
+from math import copysign
 
-black = (0,0,0)
-white = (255,255,255)
+black = (0, 0, 0)
+white = (255, 255, 255)
+grey = (128, 128, 128)
 
 pygame.init()
 pygame.mixer.init()
@@ -13,21 +15,27 @@ pygame.mixer.init()
 surfaceWidth = 800
 surfaceHeight = 600
 
-surface = pygame.display.set_mode((surfaceWidth,surfaceHeight))
+surface = pygame.display.set_mode((surfaceWidth, surfaceHeight))
 pygame.display.set_caption("Pong")
 
 clock = pygame.time.Clock()
 
-def ball(x,y,size):
-    pygame.draw.rect(surface,white,[x,y,size,size])
 
-def paddle(x,y,xsize,ysize):
-    pygame.draw.rect(surface,white,[x,y,xsize,ysize])
+def ball(x, y, size):
+    pygame.draw.rect(surface, white, [x, y, size, size])
+
+
+def paddle(x, y, xsize, ysize):
+    pygame.draw.rect(surface, white, [x, y, xsize, ysize])
+
 
 def court():
-    pygame.draw.rect(surface,white,[0,64,surfaceWidth,16])
-#    pygame.draw.rect(surface,white,[surfaceWidth-16,64,16,surfaceHeight-64])
-    pygame.draw.rect(surface,white,[0,surfaceHeight-16,surfaceWidth,16])
+    pygame.draw.rect(surface, white, [0, 64, surfaceWidth, 16])
+    # pygame.draw.rect(surface,white,[surfaceWidth-16,64,16,surfaceHeight-64])
+    for y in range(81, (surfaceHeight - 16), 32):
+        pygame.draw.rect(surface, grey, [(surfaceWidth / 2) - 8, y, 16, 16])
+    pygame.draw.rect(surface, white, [0, surfaceHeight - 16, surfaceWidth, 16])
+
 
 def sfx():
     blip = pygame.mixer.Sound("pongblip.wav")
@@ -35,26 +43,28 @@ def sfx():
     bloop = pygame.mixer.Sound("pongbloop.wav")
     return (blip, bloop, youlose)
 
+
 def main():
     blip, bloop, youlose = sfx()
     paddlea_ymove = 0
     paddlea_ysize = 80
     paddlea_xsize = 16
     paddlea_xloc = 16
-    paddlea_yloc = (surfaceHeight/2 + 12)
+    paddlea_yloc = (surfaceHeight / 2 + 12)
     paddleb_ymove = 0
     paddleb_ysize = 80
     paddleb_xsize = 16
     paddleb_xloc = (surfaceWidth - 32)
-    paddleb_yloc = (surfaceHeight/2 + 12)
+    paddleb_yloc = (surfaceHeight / 2 + 12)
     score_p1 = 0
     score_p2 = 0
     ball_size = 16
     ball_xmove = 6
-    ball_ymove = random.randint(-5,5)
-    ball_xloc = (surfaceWidth/2)
-    ball_yloc = ((surfaceHeight/2) + 40)
+    ball_ymove = random.randint(-5, 5)
+    ball_xloc = (surfaceWidth / 2)
+    ball_yloc = ((surfaceHeight / 2) + 40)
     game_over = False
+    pygame.mouse.set_visible(False)
     while not game_over:
 
         for event in pygame.event.get():
@@ -87,10 +97,10 @@ def main():
             paddleb_yloc = (surfaceHeight - (16 + paddleb_ysize))
             paddleb_ymove = 0
 
-#        if ball_xloc + ball_size >= (surfaceWidth-16):
-#            print("Collision with rear court.")
-#            bloop.play()
-#            ball_xmove = -(ball_xmove)
+        # if ball_xloc + ball_size >= (surfaceWidth-16):
+        #            print("Collision with rear court.")
+        #            bloop.play()
+        #            ball_xmove = -(ball_xmove)
 
         if ball_yloc <= 80:
             print("Collision with upper court.")
@@ -105,7 +115,8 @@ def main():
             ball_ymove = -(ball_ymove)
 
         if ball_xloc >= (paddleb_xloc):
-            if (paddleb_yloc <= ball_yloc <= paddleb_yloc + paddleb_ysize) or (paddleb_yloc <= ball_yloc+ball_size <= paddleb_yloc + paddleb_ysize):
+            if (paddleb_yloc <= ball_yloc <= paddleb_yloc + paddleb_ysize) or (
+                            paddleb_yloc <= ball_yloc + ball_size <= paddleb_yloc + paddleb_ysize):
                 print("Collison with paddleb.")
                 blip.play()
                 ball_xloc = (surfaceWidth - 33)
@@ -113,12 +124,20 @@ def main():
                 ball_ymove = -(ball_ymove) + paddleb_ymove
 
         if ball_xloc <= (paddlea_xloc + paddlea_xsize):
-            if (paddlea_yloc <= ball_yloc <= paddlea_yloc + paddlea_ysize) or (paddlea_yloc <= ball_yloc+ball_size <= paddlea_yloc + paddlea_ysize):
+            if (paddlea_yloc <= ball_yloc <= paddlea_yloc + paddlea_ysize) or (
+                            paddlea_yloc <= ball_yloc + ball_size <= paddlea_yloc + paddlea_ysize):
                 print("Collison with paddlea.")
                 blip.play()
                 ball_xloc = 33
+                x, y = pygame.mouse.get_rel()
+                print("relative mouse speed: " + str(y))
                 ball_xmove = -(ball_xmove)
-                ball_ymove = -(ball_ymove) + paddlea_ymove
+                if abs(-(ball_ymove) + (y * 0.05)) > 20:
+                    trunc_move = copysign(20, (-(ball_ymove) + (y * 0.05)))
+                    ball_ymove = -(trunc_move)
+                else:
+                    ball_ymove = (ball_ymove) + (y * 0.05)
+                print(str(ball_ymove))
 
         if ball_xloc < 0:
             print("Ball outside playfield")
@@ -127,9 +146,9 @@ def main():
             print("Score: " + str(score_p1) + " | " + str(score_p2))
             time.sleep(3)
             ball_xmove = 6
-            ball_ymove = random.randint(-5,5)
-            ball_xloc = (surfaceWidth/2)
-            ball_yloc = ((surfaceHeight/2)+32)
+            ball_ymove = random.randint(-5, 5)
+            ball_xloc = (surfaceWidth / 2)
+            ball_yloc = ((surfaceHeight / 2) + 32)
 
         if ball_xloc > surfaceWidth:
             print("Ball outside playfield")
@@ -138,14 +157,14 @@ def main():
             print("Score: " + str(score_p1) + " | " + str(score_p2))
             time.sleep(3)
             ball_xmove = -6
-            ball_ymove = random.randint(-5,5)
-            ball_xloc = (surfaceWidth/2)
-            ball_yloc = ((surfaceHeight/2)+32)
+            ball_ymove = random.randint(-5, 5)
+            ball_xloc = (surfaceWidth / 2)
+            ball_yloc = ((surfaceHeight / 2) + 32)
 
         if ball_yloc > (paddleb_yloc + (paddleb_ysize / 2)):
-            paddleb_ymove = 6
+            paddleb_ymove = 8
         elif ball_yloc < paddleb_yloc + (paddleb_ysize / 2):
-            paddleb_ymove = -6
+            paddleb_ymove = -8
         else:
             paddleb_ymove = 0
 
@@ -153,14 +172,16 @@ def main():
         paddleb_yloc = paddleb_yloc + paddleb_ymove
         ball_xloc = ball_xloc + ball_xmove
         ball_yloc = ball_yloc + ball_ymove
-    #   print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
+        # print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
         surface.fill(black)
         court()
-        paddle(paddlea_xloc,paddlea_yloc,paddlea_xsize,paddlea_ysize)
-        paddle(paddleb_xloc,paddleb_yloc,paddleb_xsize,paddleb_ysize)
-        ball(ball_xloc,ball_yloc,ball_size)
+        paddle(paddlea_xloc, paddlea_yloc, paddlea_xsize, paddlea_ysize)
+        paddle(paddleb_xloc, paddleb_yloc, paddleb_xsize, paddleb_ysize)
+        ball(ball_xloc, ball_yloc, ball_size)
         pygame.display.update()
         clock.tick(60)
+
+
 main()
 pygame.quit()
 pygame.mixer.quit()
