@@ -62,7 +62,7 @@ def score_display(score_p1,score_p2):
 
     if len(str(score_p2)) > 1:
         surface.blit(numbers[str(score_p2)[0]],(((surfaceWidth / 2) + 16),16))
-        surface.blit(numbers[str(score_p2)[1OMG]],(((surfaceWidth / 2) + 48),16))
+        surface.blit(numbers[str(score_p2)[1]],(((surfaceWidth / 2) + 48),16))
     else:
         surface.blit(numbers[str(score_p2)[0]],(((surfaceWidth / 2) + 16),16))
 
