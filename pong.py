@@ -66,6 +66,28 @@ def score_display(score_p1,score_p2):
     else:
         surface.blit(numbers[str(score_p2)[0]],(((surfaceWidth / 2) + 16),16))
 
+def slope_and_intercept(pre_ball_loc,post_ball_loc):
+    prex, prey = pre_ball_loc
+    postx, posty = post_ball_loc
+    m = (posty - prey)/(postx - prex)
+    b = (posty - (m * postx))
+    print(str(b))
+    return m,b
+
+def computer_move_paddle(pre_ball_loc,post_ball_loc,paddleb_yloc):
+    prex, prey = pre_ball_loc
+    postx, posty = post_ball_loc
+    prex = (surfaceWidth - 32) - prex
+    postx = (surfaceWidth - 32) - postx
+    m,b = slope_and_intercept((prex,prey),(postx,posty))
+    if paddleb_yloc + (40) < b and (paddleb_yloc + 40) < (surfaceHeight - 16):
+        print("Predicted impact: " + str(b) + " " + "Paddle ctr: " + str(paddleb_yloc))
+        return 8
+    elif paddleb_yloc + (40) > b and paddleb_yloc > 80:
+        return -8
+    else:
+        return 0
+
 
 def main():
     blip, bloop, youlose = sfx()
@@ -186,18 +208,25 @@ def main():
             ball_xloc = (surfaceWidth / 2)
             ball_yloc = ((surfaceHeight / 2) + 32)
 
-        if ball_yloc > (paddleb_yloc + (paddleb_ysize / 2)):
+        """        if ball_yloc > (paddleb_yloc + (paddleb_ysize / 2)):
             paddleb_ymove = 8
         elif ball_yloc < paddleb_yloc + (paddleb_ysize / 2):
             paddleb_ymove = -8
         else:
             paddleb_ymove = 0
+        """
+# Smarter computer paddle moves
 
+        pre_ball_loc = (ball_xloc,ball_yloc)
         paddlea_yloc = paddlea_yloc + paddlea_ymove
-        paddleb_yloc = paddleb_yloc + paddleb_ymove
+   #     paddleb_yloc = paddleb_yloc + paddleb_ymove
         ball_xloc = ball_xloc + ball_xmove
         ball_yloc = ball_yloc + ball_ymove
-        # print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
+        post_ball_loc = (ball_xloc,ball_yloc)
+        print(str(pre_ball_loc) + ":" + str(post_ball_loc))
+        paddleb_ymove = computer_move_paddle(pre_ball_loc,post_ball_loc,paddleb_yloc)
+        paddleb_yloc = paddleb_yloc + int(paddleb_ymove)
+    # print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
         surface.fill(black)
         court()
         score_display(score_p1,score_p2)
