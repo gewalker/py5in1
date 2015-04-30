@@ -17,7 +17,16 @@ surfaceHeight = 600
 
 surface = pygame.display.set_mode((surfaceWidth, surfaceHeight))
 pygame.display.set_caption("Pong")
-
+img0 = pygame.image.load("numbers/0.png")
+img1 = pygame.image.load("numbers/1.png")
+img2 = pygame.image.load("numbers/2.png")
+img3 = pygame.image.load("numbers/3.png")
+img4 = pygame.image.load("numbers/4.png")
+img5 = pygame.image.load("numbers/5.png")
+img6 = pygame.image.load("numbers/6.png")
+img7 = pygame.image.load("numbers/7.png")
+img8 = pygame.image.load("numbers/8.png")
+img9 = pygame.image.load("numbers/9.png")
 clock = pygame.time.Clock()
 
 
@@ -42,6 +51,20 @@ def sfx():
     youlose = pygame.mixer.Sound("youlose.wav")
     bloop = pygame.mixer.Sound("pongbloop.wav")
     return (blip, bloop, youlose)
+
+def score_display(score_p1,score_p2):
+    numbers = {"0": img0, "1": img1, "2": img2, "3": img3, "4": img4, "5": img5, "6": img6, "7": img7, "8": img8, "9": img9}
+    if len(str(score_p1)) > 1:
+        surface.blit(numbers[str(score_p1)[0]],(((surfaceWidth / 2) - 80),16))
+        surface.blit(numbers[str(score_p1)[1]],(((surfaceWidth / 2) - 48),16))
+    else:
+        surface.blit(numbers[str(score_p1)[0]],(((surfaceWidth / 2) - 48),16))
+
+    if len(str(score_p2)) > 1:
+        surface.blit(numbers[str(score_p2)[0]],(((surfaceWidth / 2) + 16),16))
+        surface.blit(numbers[str(score_p2)[1OMG]],(((surfaceWidth / 2) + 48),16))
+    else:
+        surface.blit(numbers[str(score_p2)[0]],(((surfaceWidth / 2) + 16),16))
 
 
 def main():
@@ -144,6 +167,7 @@ def main():
             youlose.play()
             score_p2 += 1
             print("Score: " + str(score_p1) + " | " + str(score_p2))
+         #   score_display(score_p1,score_p2)
             time.sleep(3)
             ball_xmove = 6
             ball_ymove = random.randint(-5, 5)
@@ -155,6 +179,7 @@ def main():
             youlose.play()
             score_p1 += 1
             print("Score: " + str(score_p1) + " | " + str(score_p2))
+          #  score_display(score_p1,score_p2)
             time.sleep(3)
             ball_xmove = -6
             ball_ymove = random.randint(-5, 5)
@@ -175,6 +200,7 @@ def main():
         # print(str(ball_xloc) + ":" + str(ball_xmove) + "  ::  " + str(ball_yloc) + ":" + str(ball_ymove))
         surface.fill(black)
         court()
+        score_display(score_p1,score_p2)
         paddle(paddlea_xloc, paddlea_yloc, paddlea_xsize, paddlea_ysize)
         paddle(paddleb_xloc, paddleb_yloc, paddleb_xsize, paddleb_ysize)
         ball(ball_xloc, ball_yloc, ball_size)

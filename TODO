@@ -1,5 +1,5 @@
 Milestone 1: properly working pong/tennis clone
-    - Implement score display: in progress
+    - Implement score display: Mostly done -- images need a bit of tweaking
     - Implement game start/end behavior: not started
     - Implement difficulty switches for paddle size and ball speed: not started
     - Convert to mouse control of player paddle: Done
