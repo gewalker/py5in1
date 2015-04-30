@@ -80,10 +80,10 @@ def computer_move_paddle(pre_ball_loc,post_ball_loc,paddleb_yloc):
     prex = (surfaceWidth - 32) - prex
     postx = (surfaceWidth - 32) - postx
     m,b = slope_and_intercept((prex,prey),(postx,posty))
-    if paddleb_yloc + (40) < b and (paddleb_yloc + 40) < (surfaceHeight - 16):
+    if paddleb_yloc + (32) < b and (paddleb_yloc + 32) < (surfaceHeight - 16):
         print("Predicted impact: " + str(b) + " " + "Paddle ctr: " + str(paddleb_yloc))
         return 8
-    elif paddleb_yloc + (40) > b and paddleb_yloc > 80:
+    elif paddleb_yloc + (32) > b and paddleb_yloc > 80:
         return -8
     else:
         return 0
@@ -116,17 +116,9 @@ def main():
             if event.type == pygame.QUIT:
                 game_over = True
 
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_UP:
-                    paddlea_ymove = -8
-                if event.key == pygame.K_DOWN:
-                    paddlea_ymove = 8
             if event.type == pygame.MOUSEMOTION:
                 x, y = pygame.mouse.get_pos()
                 paddlea_yloc = y
-
-            if event.type == pygame.KEYUP:
-                paddlea_ymove = 0
 
         if paddlea_yloc < 80:
             paddlea_yloc = 80
@@ -208,13 +200,6 @@ def main():
             ball_xloc = (surfaceWidth / 2)
             ball_yloc = ((surfaceHeight / 2) + 32)
 
-        """        if ball_yloc > (paddleb_yloc + (paddleb_ysize / 2)):
-            paddleb_ymove = 8
-        elif ball_yloc < paddleb_yloc + (paddleb_ysize / 2):
-            paddleb_ymove = -8
-        else:
-            paddleb_ymove = 0
-        """
 # Smarter computer paddle moves
 
         pre_ball_loc = (ball_xloc,ball_yloc)
